@@ -266,12 +266,12 @@ svg text { font-family: 'Inter', sans-serif; }
   </div>
   <div class="panel panel-temphm">
     <div class="panel-label">TEMPERATURE</div>
-    <div class="panel-desc">India's heat painted across 52 weeks</div>
+    <div class="panel-desc">Daily highs painted across 52 weeks — red is scorching</div>
     <div id="temphmContainer"></div>
   </div>
   <div class="panel panel-co2">
     <div class="panel-label">CARBON EMISSIONS</div>
-    <div class="panel-desc">Cumulative emissions rising through the year</div>
+    <div class="panel-desc">Cumulative emissions rising, but intensity drops with the monsoon</div>
     <div id="co2Container"></div>
   </div>
   <div class="panel panel-heartbeat">
@@ -500,7 +500,7 @@ function initTempHeatmap() {
     .on('mouseover', (e, d) => {
       if (d.val == null) return;
       const dowNames = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
-      showTooltip(e, `Week ${d.week + 1}, ${dowNames[d.dow]}<br>${d.val.toFixed(1)}°C`);
+      showTooltip(e, `Week ${d.week + 1}, ${dowNames[d.dow]}<br>${d.val.toFixed(1)}°C max`);
     })
     .on('mousemove', moveTooltip).on('mouseout', hideTooltip);
 
@@ -642,14 +642,26 @@ function initHeartbeat() {
   hbCursor = g.append('line').attr('y1',0).attr('y2',height)
     .attr('stroke','var(--text)').attr('stroke-width',1.5).attr('stroke-dasharray','4,3').attr('opacity',0.7);
 
-  // Hover overlay
+  // Hover overlay — detailed breakdown of all 8 sources
   g.append('rect').attr('class','hover-overlay').attr('width',width).attr('height',height)
     .on('mousemove', (event) => {
       const [mx] = d3.pointer(event);
       const di = Math.min(Math.max(Math.round(x.invert(mx)), 0), n-1);
       const fd = fossilData[di], cd = cleanData[di];
       const tf = fossilKeys.reduce((s,k) => s+fd[k], 0), tc = cleanKeys.reduce((s,k) => s+cd[k], 0);
-      showTooltip(event, `<strong>${dayToDate(di).dateStr}</strong><br>Fossil: ${tf.toFixed(0)} MU (Coal ${fd.coal.toFixed(0)})<br>Clean: ${tc.toFixed(0)} MU (Solar ${cd.solar.toFixed(0)}, Wind ${cd.wind.toFixed(0)})`);
+      const dot = c => `<span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:${c};margin-right:5px;vertical-align:middle;"></span>`;
+      const row = (k, v, c) => `${dot(c)}<span style="color:${c}">${k}</span> <span style="float:right;margin-left:12px">${v.toFixed(0)}</span>`;
+      showTooltip(event, `<strong>${dayToDate(di).dateStr}</strong><br>
+        <span style="color:var(--dim);font-size:10px">FOSSIL — ${tf.toFixed(0)} MU</span><br>
+        ${row('Coal', fd.coal, FOSSIL_COLORS.coal)}<br>
+        ${row('Lignite', fd.lignite, FOSSIL_COLORS.lignite)}<br>
+        ${row('Gas', fd.gas, FOSSIL_COLORS.gas)}<br>
+        <span style="color:var(--dim);font-size:10px;margin-top:4px;display:inline-block">CLEAN — ${tc.toFixed(0)} MU</span><br>
+        ${row('Nuclear', cd.nuclear, CLEAN_COLORS.nuclear)}<br>
+        ${row('Hydro', cd.hydro, CLEAN_COLORS.hydro)}<br>
+        ${row('Wind', cd.wind, CLEAN_COLORS.wind)}<br>
+        ${row('Solar', cd.solar, CLEAN_COLORS.solar)}<br>
+        ${row('Other RE', cd.other_re, CLEAN_COLORS.other_re)}`);
     }).on('mouseout', hideTooltip);
 
   // Month labels (full width, not clipped)

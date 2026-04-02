@@ -281,16 +281,19 @@ def build_json(df, df_temp, monthly_clean):
     # Fill any missing temp days
     temp_merged["india_mean"] = temp_merged["india_mean"].ffill().bfill()
 
+    # Also merge india_max for heatmap
+    temp_merged_max = df[["date"]].merge(df_temp[["date", "india_max"]], on="date", how="left")
+    temp_merged_max["india_max"] = temp_merged_max["india_max"].ffill().bfill()
+
     temperature = {
         "india_mean": [round(v, 1) for v in temp_merged["india_mean"].tolist()],
     }
 
-    # --- Temperature heatmap (52x7 grid) ---
-    # Merge temp into main df for pivoting
-    df["temp_mean"] = temp_merged["india_mean"].values
+    # --- Temperature heatmap (52x7 grid, using daily max) ---
+    df["temp_max"] = temp_merged_max["india_max"].values
 
     temp_pivot = df.pivot_table(
-        values="temp_mean", index="week", columns="dow", aggfunc="mean"
+        values="temp_max", index="week", columns="dow", aggfunc="mean"
     )
     for d in range(7):
         if d not in temp_pivot.columns:
