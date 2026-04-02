@@ -192,19 +192,27 @@ def compute_regional_map_data():
             monthly_vals.append(round(clean_pct, 1))
         monthly_clean[region] = monthly_vals
 
-    return monthly_clean
+    # Daily regional demand (EnergyMet)
+    daily_demand = {}
+    for region in REGIONS:
+        col = f"{region}: EnergyMet"
+        daily_demand[region] = [round(v, 0) for v in df[col].tolist()]
+
+    return monthly_clean, daily_demand
 
 
 def simplify_geojson():
-    """Load GeoJSON and output a simplified version for web use."""
+    """Load GeoJSON, keep simplified states, and dissolve into 5 regions."""
+    from shapely.geometry import shape, mapping
+    from shapely.ops import unary_union
+
     print("Processing GeoJSON ...")
     geo_path = DATA_RAW / "india_states.geojson"
-    out_path = WEB_DATA / "india_topo.json"
 
     with open(geo_path) as f:
         geo = json.load(f)
 
-    # Reduce coordinate precision to shrink file size (~60% reduction)
+    # --- Simplified states (keep for reference) ---
     def round_coords(coords, precision=3):
         if isinstance(coords[0], (int, float)):
             return [round(c, precision) for c in coords]
@@ -214,18 +222,56 @@ def simplify_geojson():
         feature["geometry"]["coordinates"] = round_coords(
             feature["geometry"]["coordinates"]
         )
-        # Keep only ST_NM property
         feature["properties"] = {"ST_NM": feature["properties"]["ST_NM"]}
 
-    with open(out_path, "w") as f:
+    out_states = WEB_DATA / "india_topo.json"
+    with open(out_states, "w") as f:
         json.dump(geo, f, separators=(",", ":"))
+    print(f"  Saved {out_states} ({os.path.getsize(out_states) / 1024:.0f} KB)")
 
-    size_kb = os.path.getsize(out_path) / 1024
-    print(f"  Saved {out_path} ({size_kb:.0f} KB)")
-    return geo
+    # --- Dissolve states into 5 regions ---
+    print("  Dissolving states into regions ...")
+    # Build region -> list of shapely geometries
+    region_geoms = {r: [] for r in REGIONS}
+    for feature in geo["features"]:
+        state_name = feature["properties"]["ST_NM"]
+        region = STATE_TO_REGION.get(state_name)
+        if region:
+            region_geoms[region].append(shape(feature["geometry"]))
+
+    # Merge each region's geometries
+    region_features = []
+    for region in REGIONS:
+        merged = unary_union(region_geoms[region])
+        # Simplify slightly to reduce file size
+        merged = merged.simplify(0.01, preserve_topology=True)
+        region_features.append({
+            "type": "Feature",
+            "properties": {"region": region},
+            "geometry": json.loads(json.dumps(mapping(merged))),
+        })
+
+    regions_geo = {
+        "type": "FeatureCollection",
+        "features": region_features,
+    }
+
+    # Round coordinates
+    for feature in regions_geo["features"]:
+        feature["geometry"]["coordinates"] = round_coords(
+            feature["geometry"]["coordinates"], precision=3
+        )
+
+    out_regions = WEB_DATA / "india_regions.json"
+    with open(out_regions, "w") as f:
+        json.dump(regions_geo, f, separators=(",", ":"))
+
+    size_kb = os.path.getsize(out_regions) / 1024
+    print(f"  Saved {out_regions} ({size_kb:.0f} KB) — {len(region_features)} regions")
+    return regions_geo
 
 
-def build_json(df, df_temp, monthly_clean):
+def build_json(df, df_temp, monthly_clean, daily_demand):
     """Build the master breathes_2025.json for all 6 panels."""
     print("Building breathes_2025.json ...")
     n_days = len(df)
@@ -249,6 +295,7 @@ def build_json(df, df_temp, monthly_clean):
     map_data = {
         "monthly_clean": monthly_clean,
         "state_to_region": STATE_TO_REGION,
+        "daily_demand": daily_demand,
     }
 
     # --- Heartbeat data ---
@@ -364,9 +411,9 @@ def main():
 
     df = load_and_derive_2025()
     df_temp = fetch_temperature_2025()
-    monthly_clean = compute_regional_map_data()
+    monthly_clean, daily_demand = compute_regional_map_data()
     simplify_geojson()
-    data = build_json(df, df_temp, monthly_clean)
+    data = build_json(df, df_temp, monthly_clean, daily_demand)
 
     print("\n--- Summary ---")
     print(f"Days: {data['meta']['n_days']}")

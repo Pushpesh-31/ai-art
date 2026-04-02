@@ -209,6 +209,27 @@ svg text { font-family: 'Inter', sans-serif; }
 }
 .tooltip.visible { opacity: 1; }
 .hover-overlay { fill: none; pointer-events: all; }
+
+/* ── Demand Table ── */
+.demand-row {
+  display: flex; align-items: center; gap: 6px;
+  font-size: 10px; color: var(--muted); margin-bottom: 3px;
+}
+.demand-row .region-code {
+  width: 28px; font-weight: 600; color: var(--dim);
+  letter-spacing: 0.5px; font-size: 9px;
+}
+.demand-row .demand-bar-bg {
+  flex: 1; height: 6px; background: var(--faint); border-radius: 3px;
+  overflow: hidden;
+}
+.demand-row .demand-bar {
+  height: 100%; border-radius: 3px; transition: width 0.3s ease;
+}
+.demand-row .demand-val {
+  width: 48px; text-align: right; font-size: 9px;
+  font-variant-numeric: tabular-nums;
+}
 </style>
 </head>
 <body>
@@ -258,6 +279,7 @@ svg text { font-family: 'Inter', sans-serif; }
     <div class="panel-label">INDIA MAP</div>
     <div class="panel-desc">Regional clean energy share, month by month</div>
     <div id="mapContainer"></div>
+    <div id="demandTable" style="margin-top:8px;"></div>
   </div>
   <div class="panel panel-bloom">
     <div class="panel-label">RADIAL BLOOM</div>
@@ -691,35 +713,92 @@ function updateHeartbeat(day) {
 // INDIA MAP
 // ═══════════════════════════════════════════════════════
 let mapPaths, mapPrevMonth = -1;
+const REGION_LABELS = {
+  NR:  { name: 'North',     lat: 28.5, lon: 78 },
+  WR:  { name: 'West',      lat: 21,   lon: 75 },
+  SR:  { name: 'South',     lat: 13,   lon: 78 },
+  ER:  { name: 'East',      lat: 23,   lon: 85 },
+  NER: { name: 'NE',        lat: 26,   lon: 93 },
+};
+const REGION_ORDER = ['NR', 'WR', 'SR', 'ER', 'NER'];
 
 function initMap(geoData) {
   const D = state.data;
   const container = document.getElementById('mapContainer');
   const cw = container.clientWidth;
-  const width = cw, height = Math.round(cw * 1.4);
+  const width = cw, height = Math.round(cw * 1.35);
   const features = geoData.features;
   const projection = d3.geoMercator().fitSize([width, height], { type:'FeatureCollection', features });
   const path = d3.geoPath(projection);
   const colorScale = d3.scaleSequential(d3.interpolateRdYlGn).domain([0, 80]);
 
   const svg = d3.select('#mapContainer').append('svg').attr('width', width).attr('height', height);
-  mapPaths = svg.selectAll('.state-path').data(features).join('path')
-    .attr('class','state-path').attr('d', path)
-    .attr('fill','var(--surface2)').attr('stroke','var(--bg)').attr('stroke-width',0.5)
+
+  // 5 region paths — no state boundaries at all
+  mapPaths = svg.selectAll('.region-path').data(features).join('path')
+    .attr('class','region-path').attr('d', path)
+    .attr('fill','var(--surface2)')
+    .attr('stroke', 'var(--bg)').attr('stroke-width', 2)
+    .attr('stroke-linejoin', 'round')
     .on('mouseover', (e, d) => {
-      const name = d.properties.ST_NM, region = D.map.state_to_region[name];
-      if (!region) return;
+      const region = d.properties.region;
       const month = dayToDate(state.day).month, clean = D.map.monthly_clean[region][month];
-      showTooltip(e, `<strong>${name}</strong><br>Region: ${region}<br>Clean: ${clean}%`);
+      const demand = D.map.daily_demand[region][state.day];
+      showTooltip(e, `<strong>${REGION_LABELS[region].name} Region</strong> (${region})<br>Clean: ${clean}%<br>Demand: ${demand.toFixed(0)} MU`);
     }).on('mousemove', moveTooltip).on('mouseout', hideTooltip);
+
+  // Region labels
+  REGION_ORDER.forEach(region => {
+    const { lat, lon } = REGION_LABELS[region];
+    const [px, py] = projection([lon, lat]);
+    svg.append('text')
+      .attr('x', px).attr('y', py)
+      .attr('text-anchor', 'middle').attr('dominant-baseline', 'middle')
+      .attr('fill', 'rgba(255,255,255,0.5)')
+      .attr('font-size', '9px').attr('font-weight', '700')
+      .attr('letter-spacing', '1px').attr('pointer-events', 'none')
+      .text(region);
+  });
+
   mapPaths._colorScale = colorScale;
+
+  // Build demand table
+  const maxDemand = Math.max(...REGION_ORDER.map(r => d3.max(D.map.daily_demand[r])));
+  const tableDiv = document.getElementById('demandTable');
+  tableDiv.innerHTML = REGION_ORDER.map(r =>
+    `<div class="demand-row" id="dr-${r}">
+      <span class="region-code">${r}</span>
+      <div class="demand-bar-bg"><div class="demand-bar" id="db-${r}" style="width:0%;background:var(--teal);"></div></div>
+      <span class="demand-val" id="dv-${r}">--</span>
+    </div>`
+  ).join('');
+  mapPaths._maxDemand = maxDemand;
 }
+
 function updateMap(day) {
   const D = state.data, month = dayToDate(day).month;
-  if (month === mapPrevMonth) return; mapPrevMonth = month;
-  mapPaths.transition().duration(300).attr('fill', d => {
-    const r = D.map.state_to_region[d.properties.ST_NM];
-    return r ? mapPaths._colorScale(D.map.monthly_clean[r][month]) : 'var(--faint)';
+  const colorScale = mapPaths._colorScale;
+
+  // Update colors only on month change
+  if (month !== mapPrevMonth) {
+    mapPrevMonth = month;
+    mapPaths.transition().duration(300).attr('fill', d => {
+      const r = d.properties.region;
+      return colorScale(D.map.monthly_clean[r][month]);
+    });
+  }
+
+  // Update demand table every day
+  const maxD = mapPaths._maxDemand;
+  REGION_ORDER.forEach(r => {
+    const val = D.map.daily_demand[r][day];
+    document.getElementById(`dv-${r}`).textContent = val.toFixed(0) + ' MU';
+    const bar = document.getElementById(`db-${r}`);
+    const pct = (val / maxD) * 100;
+    bar.style.width = pct + '%';
+    // Color bar to match map region color
+    const clean = D.map.monthly_clean[r][month];
+    bar.style.background = colorScale(clean);
   });
 }
 
@@ -758,7 +837,7 @@ function cycleSpeed() {
 
 async function init() {
   const [data, geoData] = await Promise.all([
-    d3.json('data/breathes_2025.json'), d3.json('data/india_topo.json'),
+    d3.json('data/breathes_2025.json'), d3.json('data/india_regions.json'),
   ]);
   state.data = data;
   initFlipTiles(); initBloom(); initTempHeatmap(); initCO2(); initHeartbeat(); initMap(geoData);
