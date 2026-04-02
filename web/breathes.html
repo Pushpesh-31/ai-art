@@ -1,0 +1,763 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>India Breathes — 2025</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800;900&family=Space+Grotesk:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #141418;
+  --surface: #1C1C22;
+  --surface2: #222228;
+  --teal: #4ECDC4;
+  --warm: #E07A5F;
+  --gold: #E0B44A;
+  --text: #E8E6E1;
+  --muted: #9A9890;
+  --dim: #8A8880;
+  --faint: #333330;
+  --rule: #2A2A28;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  background: var(--bg);
+  font-family: 'Inter', sans-serif;
+  color: var(--text);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px 20px 40px;
+  min-width: 1100px;
+  overflow-x: hidden;
+}
+
+.title-block { text-align: center; margin-bottom: 16px; }
+.title-block h1 {
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 700; font-size: 52px;
+  letter-spacing: 6px; color: var(--text); margin-bottom: 8px;
+}
+.title-block .subtitle {
+  font-size: 13px; font-weight: 300;
+  color: var(--muted); letter-spacing: 3px;
+}
+
+/* ── Split-Flap Counter ── */
+.flip-counter-row {
+  display: flex; align-items: center; justify-content: center;
+  gap: 20px; margin: 16px 0 8px;
+}
+.flip-counter { display: flex; align-items: center; gap: 12px; }
+.flip-group { display: flex; gap: 4px; }
+.flip-tile {
+  position: relative; width: 48px; height: 64px; perspective: 300px;
+}
+.flip-tile.wide { width: 64px; }
+.flip-tile.year { width: 80px; }
+.flip-tile .face {
+  position: absolute; width: 100%;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 28px;
+  color: var(--text); overflow: hidden; backface-visibility: hidden;
+}
+.flip-tile .face.top {
+  height: 50%; top: 0; background: var(--surface2);
+  border-radius: 6px 6px 0 0; border-bottom: 1px solid var(--bg);
+  align-items: flex-end;
+}
+.flip-tile .face.top .inner { transform: translateY(50%); }
+.flip-tile .face.bottom {
+  height: 50%; bottom: 0; background: var(--surface);
+  border-radius: 0 0 6px 6px; align-items: flex-start;
+}
+.flip-tile .face.bottom .inner { transform: translateY(-50%); }
+.flip-tile .flip-top {
+  position: absolute; width: 100%; height: 50%; top: 0;
+  background: var(--surface2); border-radius: 6px 6px 0 0;
+  border-bottom: 1px solid var(--bg);
+  display: flex; align-items: flex-end; justify-content: center; overflow: hidden;
+  transform-origin: bottom center; z-index: 2;
+  font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 28px;
+  color: var(--text); backface-visibility: hidden;
+}
+.flip-tile .flip-top .inner { transform: translateY(50%); }
+.flip-tile .flip-top.flipping { animation: flipDown 150ms ease-in forwards; }
+@keyframes flipDown { 0% { transform: rotateX(0deg); } 100% { transform: rotateX(-90deg); } }
+.flip-tile .flip-bottom {
+  position: absolute; width: 100%; height: 50%; bottom: 0;
+  background: var(--surface); border-radius: 0 0 6px 6px;
+  display: flex; align-items: flex-start; justify-content: center; overflow: hidden;
+  transform-origin: top center; transform: rotateX(90deg); z-index: 2;
+  font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 28px;
+  color: var(--text); backface-visibility: hidden;
+}
+.flip-tile .flip-bottom .inner { transform: translateY(-50%); }
+.flip-tile .flip-bottom.flipping { animation: flipUp 150ms 150ms ease-out forwards; }
+@keyframes flipUp { 0% { transform: rotateX(90deg); } 100% { transform: rotateX(0deg); } }
+
+/* ── Season Badge ── */
+.season-badge {
+  display: flex; align-items: center; gap: 8px;
+  font-size: 13px; font-weight: 600; letter-spacing: 1.5px;
+  text-transform: uppercase; padding: 6px 16px;
+  border-radius: 20px; border: 1px solid var(--faint);
+  transition: all 0.5s ease; overflow: hidden;
+}
+.season-icon { font-size: 18px; }
+
+#seasonCanvas {
+  position: fixed; top: 0; left: 0;
+  width: 100%; height: 100%;
+  pointer-events: none; z-index: 50;
+}
+
+/* ── Controls (below date) ── */
+.controls-top {
+  display: flex; align-items: center; gap: 14px;
+  margin: 8px 0 6px; width: 500px;
+}
+.btn-play {
+  width: 36px; height: 36px; border-radius: 50%;
+  border: 2px solid var(--faint); background: var(--surface);
+  color: var(--text); font-size: 14px; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.2s; flex-shrink: 0;
+}
+.btn-play:hover { border-color: var(--teal); color: var(--teal); }
+.scrub-slider {
+  flex: 1; -webkit-appearance: none; appearance: none;
+  height: 4px; border-radius: 2px; background: var(--faint); outline: none;
+}
+.scrub-slider::-webkit-slider-thumb {
+  -webkit-appearance: none; appearance: none;
+  width: 14px; height: 14px; border-radius: 50%;
+  background: var(--teal); cursor: pointer; border: none;
+}
+.scrub-slider::-moz-range-thumb {
+  width: 14px; height: 14px; border-radius: 50%;
+  background: var(--teal); cursor: pointer; border: none;
+}
+.speed-label {
+  font-size: 11px; color: var(--dim);
+  white-space: nowrap; cursor: pointer; user-select: none;
+}
+
+/* ── Live Stats ── */
+.live-stats {
+  display: flex; justify-content: center; gap: 32px;
+  font-size: 13px; color: var(--muted); letter-spacing: 1px;
+  margin-bottom: 20px;
+}
+.live-stats .stat-val { font-weight: 600; color: var(--text); margin-right: 4px; }
+.live-stats .stat-clean .stat-val { color: var(--teal); }
+.live-stats .stat-co2 .stat-val { color: var(--warm); }
+.live-stats .stat-temp .stat-val { color: var(--gold); }
+
+/* ── Panel Grid ── */
+.panel-grid {
+  display: grid;
+  grid-template-columns: 280px 1fr 220px;
+  grid-template-rows: auto auto auto;
+  gap: 16px;
+  width: 1080px;
+}
+.panel {
+  background: var(--surface); border-radius: 8px;
+  padding: 12px; position: relative; overflow: hidden;
+}
+.panel-label {
+  font-size: 10px; font-weight: 600; color: var(--dim);
+  letter-spacing: 2px; text-transform: uppercase; margin-bottom: 2px;
+}
+.panel-desc {
+  font-size: 10px; color: var(--dim); font-weight: 300;
+  margin-bottom: 8px; font-style: italic;
+}
+
+.panel-map { grid-column: 1; grid-row: 1; }
+.panel-bloom { grid-column: 2; grid-row: 1; display: flex; flex-direction: column; align-items: center; }
+.panel-temphm { grid-column: 3; grid-row: 1; display: flex; flex-direction: column; }
+.panel-co2 { grid-column: 1 / 4; grid-row: 2; }
+.panel-heartbeat { grid-column: 1 / 4; grid-row: 3; }
+
+/* Center SVGs in panels */
+.panel svg { display: block; margin: 0 auto; }
+
+/* ── Footer ── */
+.footer {
+  width: 1080px; text-align: center;
+  margin-top: 24px; padding-top: 20px;
+  border-top: 1px solid var(--rule);
+}
+.footer p { font-size: 11px; color: var(--dim); line-height: 1.8; }
+.footer a { color: var(--muted); text-decoration: none; }
+.footer a:hover { color: var(--text); }
+
+svg text { font-family: 'Inter', sans-serif; }
+
+.tooltip {
+  position: fixed; pointer-events: none;
+  background: rgba(20, 20, 24, 0.95);
+  border: 1px solid var(--faint); border-radius: 6px;
+  padding: 8px 12px; font-size: 12px; color: var(--text);
+  z-index: 100; opacity: 0; transition: opacity 0.15s;
+  max-width: 220px; line-height: 1.5;
+}
+.tooltip.visible { opacity: 1; }
+.hover-overlay { fill: none; pointer-events: all; }
+</style>
+</head>
+<body>
+
+<canvas id="seasonCanvas"></canvas>
+
+<div class="title-block">
+  <h1>INDIA BREATHES</h1>
+  <div class="subtitle">ONE GRID <span>&middot;</span> ONE YEAR <span>&middot;</span> 2025</div>
+</div>
+
+<div class="flip-counter-row">
+  <div class="flip-counter" id="flipCounter">
+    <div class="flip-group" id="flipDay">
+      <div class="flip-tile" id="tile-d1"></div>
+      <div class="flip-tile" id="tile-d2"></div>
+    </div>
+    <div class="flip-group" id="flipMonth">
+      <div class="flip-tile wide" id="tile-m1"></div>
+      <div class="flip-tile wide" id="tile-m2"></div>
+      <div class="flip-tile wide" id="tile-m3"></div>
+    </div>
+    <div class="flip-group" id="flipYear">
+      <div class="flip-tile year" id="tile-y"></div>
+    </div>
+  </div>
+  <div class="season-badge" id="seasonBadge">
+    <span class="season-icon" id="seasonIcon"></span>
+    <span id="seasonText"></span>
+  </div>
+</div>
+
+<div class="controls-top">
+  <button class="btn-play" id="btnPlay">&#9654;</button>
+  <input type="range" class="scrub-slider" id="scrubSlider" min="0" max="364" value="0">
+  <span class="speed-label" id="speedLabel" title="Click to change speed">1x</span>
+</div>
+
+<div class="live-stats">
+  <div class="stat-clean"><span class="stat-val" id="statClean">--</span>% CLEAN</div>
+  <div class="stat-temp"><span class="stat-val" id="statTemp">--</span>&deg;C</div>
+  <div class="stat-co2"><span class="stat-val" id="statCO2">--</span> Mt CO&#x2082;</div>
+</div>
+
+<div class="panel-grid">
+  <div class="panel panel-map">
+    <div class="panel-label">INDIA MAP</div>
+    <div class="panel-desc">Regional clean energy share, month by month</div>
+    <div id="mapContainer"></div>
+  </div>
+  <div class="panel panel-bloom">
+    <div class="panel-label">RADIAL BLOOM</div>
+    <div class="panel-desc">Each petal is a day — length is demand, green is clean, red is fossil</div>
+    <div id="bloomContainer" style="position:relative;"></div>
+  </div>
+  <div class="panel panel-temphm">
+    <div class="panel-label">TEMPERATURE</div>
+    <div class="panel-desc">India's heat painted across 52 weeks</div>
+    <div id="temphmContainer"></div>
+  </div>
+  <div class="panel panel-co2">
+    <div class="panel-label">CARBON EMISSIONS</div>
+    <div class="panel-desc">Cumulative emissions rising through the year</div>
+    <div id="co2Container"></div>
+  </div>
+  <div class="panel panel-heartbeat">
+    <div class="panel-label">THE HEARTBEAT</div>
+    <div class="panel-desc">Fossil fuels push down, clean energy lifts up — watch it build</div>
+    <div id="heartbeatContainer"></div>
+  </div>
+</div>
+
+<div class="footer">
+  <p>Data: CEA Daily Generation Report (cleaned by <a href="https://robbieandrew.github.io/india/" target="_blank">Robbie Andrew</a>, CICERO) &middot; POSOCO Regional &middot; Open-Meteo Temperature</p>
+  <p style="margin-top:4px;"><strong style="color:var(--muted);">One Sensor, One Year</strong> &mdash; Edition 1 &middot; Created by Pushpesh Sharma</p>
+</div>
+
+<div class="tooltip" id="tooltip"></div>
+
+<script src="https://d3js.org/d3.v7.min.js"></script>
+<script src="https://unpkg.com/topojson-client@3"></script>
+<script>
+const SPEEDS = [120, 80, 40, 200];
+const SPEED_LABELS = ['1x', '2x', '3x', '0.5x'];
+const FOSSIL_COLORS = { coal: '#922B21', lignite: '#C0392B', gas: '#E74C3C' };
+const CLEAN_COLORS = { nuclear: '#2EC4B6', hydro: '#1B4F72', wind: '#85C1E9', solar: '#F5B041', other_re: '#A569BD' };
+
+const state = { day: 0, playing: false, timerId: null, speedIdx: 0, data: null,
+  prevFlip: { dd: '', mmm: '', yyyy: '' }, prevSeason: '' };
+
+const tooltip = d3.select('#tooltip');
+const MONTH_SHORT = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
+
+function dayToDate(day) {
+  const d = new Date(2025, 0, 1 + day);
+  return { dd: String(d.getDate()).padStart(2, '0'), mmm: MONTH_SHORT[d.getMonth()],
+    yyyy: '2025', month: d.getMonth(),
+    dateStr: d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) };
+}
+function showTooltip(event, html) {
+  tooltip.classed('visible', true).html(html)
+    .style('left', (event.clientX + 14) + 'px').style('top', (event.clientY - 14) + 'px');
+}
+function hideTooltip() { tooltip.classed('visible', false); }
+function moveTooltip(event) {
+  tooltip.style('left', (event.clientX + 14) + 'px').style('top', (event.clientY - 14) + 'px');
+}
+
+// ═══════════════════════════════════════════════════════
+// SEASONS
+// ═══════════════════════════════════════════════════════
+const SEASONS = [
+  { name: 'WINTER',      icon: '&#10052;',  color: '#7FB3D8', bg: 'rgba(127,179,216,0.08)', months: [0, 1] },
+  { name: 'SPRING',      icon: '&#127800;', color: '#A8D5A2', bg: 'rgba(168,213,162,0.08)', months: [2, 3] },
+  { name: 'SUMMER HEAT', icon: '&#9728;',   color: '#E8A838', bg: 'rgba(232,168,56,0.10)',  months: [4, 5] },
+  { name: 'MONSOON',     icon: '&#127783;', color: '#5BA3CF', bg: 'rgba(91,163,207,0.10)',  months: [6, 7, 8] },
+  { name: 'AUTUMN',      icon: '&#127810;', color: '#C9956B', bg: 'rgba(201,149,107,0.08)', months: [9, 10] },
+  { name: 'WINTER',      icon: '&#10052;',  color: '#7FB3D8', bg: 'rgba(127,179,216,0.08)', months: [11] },
+];
+function getSeason(month) { return SEASONS.find(s => s.months.includes(month)) || SEASONS[0]; }
+function updateSeason(day) {
+  const season = getSeason(dayToDate(day).month);
+  if (season.name === state.prevSeason) return;
+  state.prevSeason = season.name;
+  const badge = document.getElementById('seasonBadge');
+  badge.style.borderColor = season.color; badge.style.color = season.color; badge.style.background = season.bg;
+  document.getElementById('seasonIcon').innerHTML = season.icon;
+  document.getElementById('seasonText').textContent = season.name;
+  updateParticles(season.name);
+}
+
+// ═══════════════════════════════════════════════════════
+// PARTICLES
+// ═══════════════════════════════════════════════════════
+const canvas = document.getElementById('seasonCanvas');
+const ctx = canvas.getContext('2d');
+let particles = [], currentSeasonParticle = '', particleRAF;
+function resizeCanvas() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+resizeCanvas(); window.addEventListener('resize', resizeCanvas);
+
+function updateParticles(sn) {
+  if (currentSeasonParticle === sn) return; currentSeasonParticle = sn; particles = [];
+  const count = sn === 'MONSOON' ? 80 : sn === 'WINTER' ? 40 : sn === 'SUMMER HEAT' ? 25 : 0;
+  for (let i = 0; i < count; i++) particles.push(createParticle(sn, true));
+}
+function createParticle(s, ry) {
+  const w = canvas.width, h = canvas.height;
+  if (s === 'MONSOON') return { type:'rain', x:Math.random()*w, y:ry?Math.random()*h:-10, speed:4+Math.random()*4, len:12+Math.random()*18, opacity:0.15+Math.random()*0.2 };
+  if (s === 'WINTER') return { type:'snow', x:Math.random()*w, y:ry?Math.random()*h:-10, speed:0.5+Math.random()*1.5, radius:1+Math.random()*2.5, wobble:Math.random()*Math.PI*2, wobbleSpeed:0.01+Math.random()*0.02, opacity:0.2+Math.random()*0.3 };
+  if (s === 'SUMMER HEAT') return { type:'heat', x:Math.random()*w, y:h*0.6+Math.random()*h*0.4, speed:0.3+Math.random()*0.6, radius:2+Math.random()*4, opacity:0.06+Math.random()*0.08, wobble:Math.random()*Math.PI*2 };
+  return { type:'none' };
+}
+function drawParticles() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  for (let i = particles.length - 1; i >= 0; i--) {
+    const p = particles[i];
+    if (p.type === 'rain') {
+      ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.lineTo(p.x - 1, p.y + p.len);
+      ctx.strokeStyle = `rgba(120,180,220,${p.opacity})`; ctx.lineWidth = 1; ctx.stroke();
+      p.y += p.speed; p.x -= 0.5;
+      if (p.y > canvas.height) particles[i] = createParticle('MONSOON', false);
+    } else if (p.type === 'snow') {
+      p.wobble += p.wobbleSpeed; p.x += Math.sin(p.wobble) * 0.5; p.y += p.speed;
+      ctx.beginPath(); ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(200,220,240,${p.opacity})`; ctx.fill();
+      if (p.y > canvas.height) particles[i] = createParticle('WINTER', false);
+    } else if (p.type === 'heat') {
+      p.wobble += 0.03; p.x += Math.sin(p.wobble) * 0.8; p.y -= p.speed;
+      ctx.beginPath(); ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(232,168,56,${p.opacity})`; ctx.fill();
+      if (p.y < canvas.height * 0.2) particles[i] = createParticle('SUMMER HEAT', false);
+    }
+  }
+  particleRAF = requestAnimationFrame(drawParticles);
+}
+drawParticles();
+
+// ═══════════════════════════════════════════════════════
+// SPLIT-FLAP COUNTER
+// ═══════════════════════════════════════════════════════
+function initFlipTiles() {
+  ['tile-d1','tile-d2'].forEach(id => {
+    document.getElementById(id).innerHTML = '<div class="face top"><div class="inner">0</div></div><div class="face bottom"><div class="inner">0</div></div>';
+  });
+  ['tile-m1','tile-m2','tile-m3'].forEach(id => {
+    document.getElementById(id).innerHTML = '<div class="face top"><div class="inner">-</div></div><div class="face bottom"><div class="inner">-</div></div>';
+  });
+  document.getElementById('tile-y').innerHTML = '<div class="face top"><div class="inner">2025</div></div><div class="face bottom"><div class="inner">2025</div></div>';
+}
+function flipTile(tileEl, newVal) {
+  const topFace = tileEl.querySelector('.face.top .inner');
+  const bottomFace = tileEl.querySelector('.face.bottom .inner');
+  if (topFace.textContent === newVal) return;
+  tileEl.querySelectorAll('.flip-top,.flip-bottom').forEach(e => e.remove());
+  const ft = document.createElement('div'); ft.className = 'flip-top flipping';
+  ft.innerHTML = `<div class="inner">${topFace.textContent}</div>`; tileEl.appendChild(ft);
+  const fb = document.createElement('div'); fb.className = 'flip-bottom flipping';
+  fb.innerHTML = `<div class="inner">${newVal}</div>`; tileEl.appendChild(fb);
+  bottomFace.textContent = newVal;
+  setTimeout(() => { topFace.textContent = newVal; ft.remove(); fb.remove(); }, 320);
+}
+function updateFlipCounter(day) {
+  const { dd, mmm, yyyy } = dayToDate(day);
+  if (dd !== state.prevFlip.dd) { flipTile(document.getElementById('tile-d1'), dd[0]); flipTile(document.getElementById('tile-d2'), dd[1]); state.prevFlip.dd = dd; }
+  if (mmm !== state.prevFlip.mmm) { flipTile(document.getElementById('tile-m1'), mmm[0]); flipTile(document.getElementById('tile-m2'), mmm[1]); flipTile(document.getElementById('tile-m3'), mmm[2]); state.prevFlip.mmm = mmm; }
+  if (yyyy !== state.prevFlip.yyyy) { flipTile(document.getElementById('tile-y'), yyyy); state.prevFlip.yyyy = yyyy; }
+}
+
+function updateStats(day) {
+  const D = state.data;
+  document.getElementById('statClean').textContent = D.bloom.clean_pct[day].toFixed(1);
+  document.getElementById('statTemp').textContent = D.temperature.india_mean[day].toFixed(1);
+  document.getElementById('statCO2').textContent = D.co2.cumulative_mt[day].toFixed(1);
+}
+
+// ═══════════════════════════════════════════════════════
+// RADIAL BLOOM
+// ═══════════════════════════════════════════════════════
+let bloomArcs, bloomCenterPct;
+
+function initBloom() {
+  const D = state.data, size = 500, cx = size/2, cy = size/2;
+  const innerR = 60, outerRMax = size/2 - 30, n = D.meta.n_days;
+  const cleanMin = d3.min(D.bloom.clean_pct), cleanMax = d3.max(D.bloom.clean_pct);
+  const colorScale = d3.scaleSequential(d3.interpolateRdYlGn).domain([cleanMin, cleanMax]);
+  const rScale = d3.scaleLinear().domain([0, D.bloom.max_total]).range([innerR, outerRMax]);
+
+  const svg = d3.select('#bloomContainer').append('svg').attr('width', size).attr('height', size);
+  const g = svg.append('g').attr('transform', `translate(${cx},${cy})`);
+  const arc = d3.arc(), angleStep = (2 * Math.PI) / n;
+
+  bloomArcs = g.selectAll('.bloom-wedge').data(d3.range(n)).join('path')
+    .attr('d', i => arc({ innerRadius: innerR, outerRadius: rScale(D.bloom.total[i]),
+      startAngle: i * angleStep - angleStep/2, endAngle: i * angleStep + angleStep/2 }))
+    .attr('fill', i => colorScale(D.bloom.clean_pct[i]))
+    .attr('opacity', 0).style('transition', 'opacity 120ms ease-out')
+    .on('mouseover', (e, i) => showTooltip(e, `<strong>${dayToDate(i).dateStr}</strong><br>${D.bloom.total[i].toFixed(0)} MU/day<br>Clean: ${D.bloom.clean_pct[i].toFixed(1)}%`))
+    .on('mousemove', moveTooltip).on('mouseout', hideTooltip);
+
+  const monthStarts = [0,31,59,90,120,151,181,212,243,273,304,334];
+  g.selectAll('.month-label').data(monthStarts).join('text')
+    .attr('text-anchor','middle').attr('dominant-baseline','middle')
+    .attr('x', d => Math.cos(d*angleStep - Math.PI/2) * (outerRMax+16))
+    .attr('y', d => Math.sin(d*angleStep - Math.PI/2) * (outerRMax+16))
+    .attr('fill','var(--dim)').attr('font-size','9px').attr('font-weight','600')
+    .attr('letter-spacing','1px').text((d,i) => MONTH_SHORT[i]);
+
+  bloomCenterPct = g.append('text').attr('text-anchor','middle').attr('y',-6)
+    .attr('fill','var(--text)').attr('font-family','Space Grotesk, sans-serif')
+    .attr('font-size','28px').attr('font-weight','700');
+  g.append('text').attr('text-anchor','middle').attr('y',16)
+    .attr('fill','var(--muted)').attr('font-size','10px').attr('letter-spacing','1.5px').text('CLEAN ENERGY');
+}
+function updateBloom(day) {
+  bloomArcs.attr('opacity', (d, i) => i <= day ? 0.9 : 0);
+  bloomCenterPct.text(state.data.bloom.clean_pct[day].toFixed(1) + '%');
+}
+
+// ═══════════════════════════════════════════════════════
+// TEMPERATURE HEATMAP (52x7 grid)
+// ═══════════════════════════════════════════════════════
+let temphmRects;
+
+function initTempHeatmap() {
+  const D = state.data, hm = D.temp_heatmap;
+  const container = document.getElementById('temphmContainer');
+  const containerW = container.clientWidth;
+  const margin = { top: 4, right: 4, bottom: 20, left: 4 };
+  const cellW = Math.floor((containerW - margin.left - margin.right) / 7);
+  const cellH = 7;
+  const width = cellW * 7 + margin.left + margin.right;
+  const height = cellH * hm.weeks + margin.top + margin.bottom;
+
+  // Reversed RdYlBu: red=hot, blue=cool
+  const colorScale = d3.scaleSequential(t => d3.interpolateRdYlBu(1 - t))
+    .domain([hm.z_min, hm.z_max]);
+
+  const svg = d3.select('#temphmContainer').append('svg').attr('width', width).attr('height', height);
+  const g = svg.append('g').attr('transform', `translate(${margin.left},${margin.top})`);
+
+  const cells = [];
+  hm.z.forEach((row, wi) => { row.forEach((val, di) => { cells.push({ week: wi, dow: di, val }); }); });
+
+  temphmRects = g.selectAll('.thm-cell').data(cells).join('rect').attr('class', 'thm-cell')
+    .attr('x', d => d.dow * cellW).attr('y', d => d.week * cellH)
+    .attr('width', cellW - 1).attr('height', cellH - 1).attr('rx', 1)
+    .attr('fill', d => d.val != null ? colorScale(d.val) : 'var(--bg)')
+    .attr('opacity', 0)
+    .on('mouseover', (e, d) => {
+      if (d.val == null) return;
+      const dowNames = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+      showTooltip(e, `Week ${d.week + 1}, ${dowNames[d.dow]}<br>${d.val.toFixed(1)}°C`);
+    })
+    .on('mousemove', moveTooltip).on('mouseout', hideTooltip);
+
+  ['M','T','W','T','F','S','S'].forEach((l, i) => {
+    g.append('text').attr('x', i * cellW + cellW/2).attr('y', hm.weeks * cellH + 14)
+      .attr('text-anchor','middle').attr('fill','var(--dim)').attr('font-size','8px').text(l);
+  });
+}
+function updateTempHeatmap(day) {
+  const weekIdx = state.data.day_to_week[day];
+  temphmRects.attr('opacity', d => d.week <= weekIdx ? 0.9 : 0);
+}
+
+// ═══════════════════════════════════════════════════════
+// CO2 (full width, progressive reveal)
+// ═══════════════════════════════════════════════════════
+let co2Clip, co2XScale;
+
+function initCO2() {
+  const D = state.data, n = D.meta.n_days;
+  const container = document.getElementById('co2Container');
+  const containerW = container.clientWidth;
+  const margin = { top: 10, right: 60, bottom: 28, left: 60 };
+  const width = containerW - margin.left - margin.right;
+  const height = 180 - margin.top - margin.bottom;
+
+  const svg = d3.select('#co2Container').append('svg')
+    .attr('width', containerW).attr('height', height + margin.top + margin.bottom);
+  const g = svg.append('g').attr('transform', `translate(${margin.left},${margin.top})`);
+
+  const x = d3.scaleLinear().domain([0, n-1]).range([0, width]);
+  co2XScale = x;
+  const yL = d3.scaleLinear().domain([0, d3.max(D.co2.cumulative_mt)*1.05]).range([height, 0]);
+  const yR = d3.scaleLinear().domain([d3.min(D.co2.intensity)*0.9, d3.max(D.co2.intensity)*1.1]).range([height, 0]);
+
+  svg.append('defs').append('clipPath').attr('id','co2-clip')
+    .append('rect').attr('height', height+10).attr('y',-5).attr('width', 0);
+  co2Clip = svg.select('#co2-clip rect');
+
+  const clipped = g.append('g').attr('clip-path','url(#co2-clip)');
+
+  clipped.append('path').datum(d3.range(n))
+    .attr('d', d3.area().x(i=>x(i)).y0(height).y1(i=>yL(D.co2.cumulative_mt[i])).curve(d3.curveMonotoneX))
+    .attr('fill','rgba(192,57,43,0.25)').attr('stroke','#C0392B').attr('stroke-width',1.5);
+
+  clipped.append('path').datum(d3.range(n))
+    .attr('d', d3.line().x(i=>x(i)).y(i=>yR(D.co2.intensity[i])).curve(d3.curveMonotoneX))
+    .attr('fill','none').attr('stroke','#E67E22').attr('stroke-width',1.2).attr('stroke-dasharray','4,3');
+
+  // Hover overlay
+  g.append('rect').attr('class','hover-overlay').attr('width',width).attr('height',height)
+    .on('mousemove', (event) => {
+      const [mx] = d3.pointer(event);
+      const di = Math.min(Math.max(Math.round(x.invert(mx)), 0), n-1);
+      showTooltip(event, `<strong>${dayToDate(di).dateStr}</strong><br>Cumulative: ${D.co2.cumulative_mt[di].toFixed(1)} Mt CO&#x2082;<br>Daily: ${D.co2.daily_kt[di].toFixed(0)} kt<br>Intensity: ${D.co2.intensity[di].toFixed(0)} tCO&#x2082;/GWh`);
+    }).on('mouseout', hideTooltip);
+
+  // Axes
+  g.append('g').attr('transform',`translate(0,${height})`)
+    .call(d3.axisBottom(x).ticks(12).tickFormat(i => MONTH_SHORT[dayToDate(Math.round(i)).month]))
+    .call(g => g.select('.domain').attr('stroke','var(--faint)'))
+    .call(g => g.selectAll('text').attr('fill','var(--dim)').attr('font-size','9px'));
+  g.append('g')
+    .call(d3.axisLeft(yL).ticks(5).tickFormat(d => d + ' Mt'))
+    .call(g => g.select('.domain').remove())
+    .call(g => g.selectAll('text').attr('fill','#C0392B').attr('font-size','9px'))
+    .call(g => g.selectAll('line').attr('stroke','var(--faint)').attr('stroke-dasharray','2,2'));
+  g.append('g').attr('transform',`translate(${width},0)`)
+    .call(d3.axisRight(yR).ticks(4).tickFormat(d => d.toFixed(0) + ' t/GWh'))
+    .call(g => g.select('.domain').remove())
+    .call(g => g.selectAll('text').attr('fill','#E67E22').attr('font-size','9px'));
+
+  // Legend
+  const leg = g.append('g').attr('transform', `translate(${width - 280}, 8)`);
+  leg.append('line').attr('x1',0).attr('x2',20).attr('y1',0).attr('y2',0).attr('stroke','#C0392B').attr('stroke-width',2);
+  leg.append('text').attr('x',24).attr('y',4).attr('fill','var(--dim)').attr('font-size','9px').text('Cumulative CO₂ (Mt)');
+  leg.append('line').attr('x1',140).attr('x2',160).attr('y1',0).attr('y2',0).attr('stroke','#E67E22').attr('stroke-width',1.5).attr('stroke-dasharray','4,3');
+  leg.append('text').attr('x',164).attr('y',4).attr('fill','var(--dim)').attr('font-size','9px').text('Intensity (tCO₂/GWh)');
+}
+function updateCO2(day) { co2Clip.attr('width', co2XScale(day)); }
+
+// ═══════════════════════════════════════════════════════
+// HEARTBEAT — progressive build with clip path
+// ═══════════════════════════════════════════════════════
+let hbClipRect, hbXScale, hbCursor;
+
+function initHeartbeat() {
+  const D = state.data, n = D.meta.n_days;
+  const container = document.getElementById('heartbeatContainer');
+  const containerW = container.clientWidth;
+  const margin = { top: 10, right: 20, bottom: 40, left: 50 };
+  const width = containerW - margin.left - margin.right;
+  const height = 240 - margin.top - margin.bottom;
+
+  const fossilKeys = ['coal','lignite','gas'], cleanKeys = ['nuclear','hydro','wind','solar','other_re'];
+  const days = d3.range(n);
+  const fossilData = days.map(i => { const o = {day:i}; fossilKeys.forEach(k => o[k]=D.heartbeat.fossil[k][i]); return o; });
+  const cleanData = days.map(i => { const o = {day:i}; cleanKeys.forEach(k => o[k]=D.heartbeat.clean[k][i]); return o; });
+  const fossilStack = d3.stack().keys(fossilKeys)(fossilData);
+  const cleanStack = d3.stack().keys(cleanKeys)(cleanData);
+
+  const maxF = d3.max(fossilStack[fossilStack.length-1], d => d[1]);
+  const maxC = d3.max(cleanStack[cleanStack.length-1], d => d[1]);
+  const maxY = Math.max(maxF, maxC) * 1.05;
+
+  const x = d3.scaleLinear().domain([0, n-1]).range([0, width]);
+  const y = d3.scaleLinear().domain([0, maxY]).range([0, height/2]);
+  hbXScale = x;
+
+  const svg = d3.select('#heartbeatContainer').append('svg')
+    .attr('width', containerW).attr('height', height + margin.top + margin.bottom);
+
+  // Clip path for progressive build
+  svg.append('defs').append('clipPath').attr('id','hb-clip')
+    .append('rect').attr('height', height + 20).attr('y', -10).attr('width', 0);
+  hbClipRect = svg.select('#hb-clip rect');
+
+  const g = svg.append('g').attr('transform', `translate(${margin.left},${margin.top})`);
+  const midY = height / 2;
+
+  // Zero line (always full width, not clipped)
+  g.append('line').attr('x1',0).attr('x2',width).attr('y1',midY).attr('y2',midY)
+    .attr('stroke','var(--dim)').attr('stroke-width',0.5);
+
+  // Clipped group for stacked areas
+  const clippedG = g.append('g').attr('clip-path','url(#hb-clip)');
+
+  const areaUp = d3.area().x(d=>x(d.data.day)).y0(d=>midY-y(d[0])).y1(d=>midY-y(d[1])).curve(d3.curveMonotoneX);
+  const areaDown = d3.area().x(d=>x(d.data.day)).y0(d=>midY+y(d[0])).y1(d=>midY+y(d[1])).curve(d3.curveMonotoneX);
+
+  fossilStack.forEach(layer => {
+    clippedG.append('path').datum(layer).attr('d', areaDown).attr('fill', FOSSIL_COLORS[layer.key]).attr('opacity', 0.85);
+  });
+  cleanStack.forEach(layer => {
+    clippedG.append('path').datum(layer).attr('d', areaUp).attr('fill', CLEAN_COLORS[layer.key]).attr('opacity', 0.85);
+  });
+
+  // Cursor at leading edge
+  hbCursor = g.append('line').attr('y1',0).attr('y2',height)
+    .attr('stroke','var(--text)').attr('stroke-width',1.5).attr('stroke-dasharray','4,3').attr('opacity',0.7);
+
+  // Hover overlay
+  g.append('rect').attr('class','hover-overlay').attr('width',width).attr('height',height)
+    .on('mousemove', (event) => {
+      const [mx] = d3.pointer(event);
+      const di = Math.min(Math.max(Math.round(x.invert(mx)), 0), n-1);
+      const fd = fossilData[di], cd = cleanData[di];
+      const tf = fossilKeys.reduce((s,k) => s+fd[k], 0), tc = cleanKeys.reduce((s,k) => s+cd[k], 0);
+      showTooltip(event, `<strong>${dayToDate(di).dateStr}</strong><br>Fossil: ${tf.toFixed(0)} MU (Coal ${fd.coal.toFixed(0)})<br>Clean: ${tc.toFixed(0)} MU (Solar ${cd.solar.toFixed(0)}, Wind ${cd.wind.toFixed(0)})`);
+    }).on('mouseout', hideTooltip);
+
+  // Month labels (full width, not clipped)
+  const monthStarts = [0,31,59,90,120,151,181,212,243,273,304,334];
+  const xAxis = g.append('g').attr('transform',`translate(0,${height+4})`);
+  monthStarts.forEach((d,i) => {
+    xAxis.append('text').attr('x',x(d)).attr('y',12).attr('fill','var(--dim)')
+      .attr('font-size','9px').attr('text-anchor','middle').text(MONTH_SHORT[i]);
+  });
+
+  // Legend
+  const legend = svg.append('g').attr('transform',`translate(${margin.left},${height+margin.top+20})`);
+  const allKeys = [...fossilKeys.map(k=>({key:k,color:FOSSIL_COLORS[k]})),...cleanKeys.map(k=>({key:k,color:CLEAN_COLORS[k]}))];
+  let lx = 0;
+  allKeys.forEach(({key,color}) => {
+    legend.append('rect').attr('x',lx).attr('y',0).attr('width',10).attr('height',10).attr('fill',color).attr('rx',2);
+    legend.append('text').attr('x',lx+14).attr('y',9).attr('fill','var(--dim)').attr('font-size','9px').text(key.replace('_',' '));
+    lx += key.length * 6 + 30;
+  });
+}
+function updateHeartbeat(day) {
+  hbClipRect.attr('width', hbXScale(day));
+  hbCursor.attr('x1', hbXScale(day)).attr('x2', hbXScale(day));
+}
+
+// ═══════════════════════════════════════════════════════
+// INDIA MAP
+// ═══════════════════════════════════════════════════════
+let mapPaths, mapPrevMonth = -1;
+
+function initMap(geoData) {
+  const D = state.data;
+  const container = document.getElementById('mapContainer');
+  const cw = container.clientWidth;
+  const width = cw, height = Math.round(cw * 1.4);
+  const features = geoData.features;
+  const projection = d3.geoMercator().fitSize([width, height], { type:'FeatureCollection', features });
+  const path = d3.geoPath(projection);
+  const colorScale = d3.scaleSequential(d3.interpolateRdYlGn).domain([0, 80]);
+
+  const svg = d3.select('#mapContainer').append('svg').attr('width', width).attr('height', height);
+  mapPaths = svg.selectAll('.state-path').data(features).join('path')
+    .attr('class','state-path').attr('d', path)
+    .attr('fill','var(--surface2)').attr('stroke','var(--bg)').attr('stroke-width',0.5)
+    .on('mouseover', (e, d) => {
+      const name = d.properties.ST_NM, region = D.map.state_to_region[name];
+      if (!region) return;
+      const month = dayToDate(state.day).month, clean = D.map.monthly_clean[region][month];
+      showTooltip(e, `<strong>${name}</strong><br>Region: ${region}<br>Clean: ${clean}%`);
+    }).on('mousemove', moveTooltip).on('mouseout', hideTooltip);
+  mapPaths._colorScale = colorScale;
+}
+function updateMap(day) {
+  const D = state.data, month = dayToDate(day).month;
+  if (month === mapPrevMonth) return; mapPrevMonth = month;
+  mapPaths.transition().duration(300).attr('fill', d => {
+    const r = D.map.state_to_region[d.properties.ST_NM];
+    return r ? mapPaths._colorScale(D.map.monthly_clean[r][month]) : 'var(--faint)';
+  });
+}
+
+// ═══════════════════════════════════════════════════════
+// MASTER
+// ═══════════════════════════════════════════════════════
+function updateAll(day) {
+  state.day = day;
+  updateFlipCounter(day); updateSeason(day); updateStats(day);
+  updateBloom(day); updateTempHeatmap(day); updateCO2(day);
+  updateHeartbeat(day); updateMap(day);
+  document.getElementById('scrubSlider').value = day;
+}
+
+function togglePlay() {
+  if (state.playing) {
+    clearInterval(state.timerId); state.playing = false;
+    document.getElementById('btnPlay').innerHTML = '&#9654;';
+  } else {
+    if (state.day >= 364) state.day = 0;
+    state.playing = true;
+    document.getElementById('btnPlay').innerHTML = '&#9646;&#9646;';
+    state.timerId = setInterval(() => {
+      state.day++;
+      if (state.day > 364) { state.day = 364; togglePlay(); return; }
+      updateAll(state.day);
+    }, SPEEDS[state.speedIdx]);
+  }
+}
+function cycleSpeed() {
+  const was = state.playing; if (was) togglePlay();
+  state.speedIdx = (state.speedIdx + 1) % SPEEDS.length;
+  document.getElementById('speedLabel').textContent = SPEED_LABELS[state.speedIdx];
+  if (was) togglePlay();
+}
+
+async function init() {
+  const [data, geoData] = await Promise.all([
+    d3.json('data/breathes_2025.json'), d3.json('data/india_topo.json'),
+  ]);
+  state.data = data;
+  initFlipTiles(); initBloom(); initTempHeatmap(); initCO2(); initHeartbeat(); initMap(geoData);
+  updateAll(0);
+  document.getElementById('btnPlay').addEventListener('click', togglePlay);
+  document.getElementById('scrubSlider').addEventListener('input', e => {
+    if (state.playing) togglePlay(); updateAll(parseInt(e.target.value));
+  });
+  document.getElementById('speedLabel').addEventListener('click', cycleSpeed);
+}
+init();
+</script>
+</body>
+</html>
