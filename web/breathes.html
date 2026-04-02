@@ -738,7 +738,7 @@ function initMap(geoData) {
   mapPaths = svg.selectAll('.region-path').data(features).join('path')
     .attr('class','region-path').attr('d', path)
     .attr('fill','var(--surface2)')
-    .attr('stroke', 'var(--bg)').attr('stroke-width', 2)
+    .attr('stroke', 'rgba(20,20,24,0.5)').attr('stroke-width', 1)
     .attr('stroke-linejoin', 'round')
     .on('mouseover', (e, d) => {
       const region = d.properties.region;
@@ -747,17 +747,16 @@ function initMap(geoData) {
       showTooltip(e, `<strong>${REGION_LABELS[region].name} Region</strong> (${region})<br>Clean: ${clean}%<br>Demand: ${demand.toFixed(0)} MU`);
     }).on('mousemove', moveTooltip).on('mouseout', hideTooltip);
 
-  // Region labels
-  REGION_ORDER.forEach(region => {
-    const { lat, lon } = REGION_LABELS[region];
-    const [px, py] = projection([lon, lat]);
+  // Region labels — centered on each region's centroid
+  features.forEach(f => {
+    const [cx, cy] = path.centroid(f);
     svg.append('text')
-      .attr('x', px).attr('y', py)
+      .attr('x', cx).attr('y', cy)
       .attr('text-anchor', 'middle').attr('dominant-baseline', 'middle')
-      .attr('fill', 'rgba(255,255,255,0.5)')
+      .attr('fill', '#000').attr('opacity', 0.6)
       .attr('font-size', '9px').attr('font-weight', '700')
       .attr('letter-spacing', '1px').attr('pointer-events', 'none')
-      .text(region);
+      .text(f.properties.region);
   });
 
   mapPaths._colorScale = colorScale;
