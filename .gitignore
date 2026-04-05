@@ -6,11 +6,11 @@ __pycache__/
 .ipynb_checkpoints/
 
 # Data (raw downloads are large, keep processed)
-data/raw/
+**/data/raw/
 
 # Node
 node_modules/
-web/dist/
+**/web/dist/
 
 # OS
 .DS_Store
