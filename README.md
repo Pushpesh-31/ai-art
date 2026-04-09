@@ -9,7 +9,7 @@ The art makes you feel it. The story makes you understand it.
 | # | Title | Data | Status |
 |---|-------|------|--------|
 | 1 | [India Breathes](editions/india-breathes/) | India's electricity grid, 2024 | Complete |
-| 2 | [Texas Grid](editions/texas-grid/) | ERCOT electricity grid, 2024 | In progress |
+| 2 | [Texas Grid](editions/texas-grid/) | ERCOT electricity grid, 2025 | In progress |
 
 ## About
 

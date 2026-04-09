@@ -1,4 +1,4 @@
-# Edition 2: Texas Grid — ERCOT, 2024
+# Edition 2: Texas Grid — ERCOT, 2025
 
 ## What This Is
 
@@ -54,17 +54,17 @@ Edition 2 of "One Sensor, One Year." One year of Texas's electricity grid — ge
 
 ## Exploration Phase
 
-1. **Download and parse** ERCOT Fuel Mix data for 2024
-2. **Filter to calendar year 2024** (Jan 1 - Dec 31)
+1. **Download and parse** ERCOT Fuel Mix data for 2025
+2. **Filter to calendar year 2025** (Jan 1 - Dec 31)
 3. **Aggregate to daily** (hourly -> daily totals by fuel type) for comparability with Edition 1
 4. **Basic statistics:** min, max, mean, std for each fuel type
 5. **Time series plots:** overlay all fuel types for the year
 6. **Seasonal patterns:** monthly averages — where does summer AC load show up? When does wind peak?
 7. **The renewable share:** daily renewable % of total. When did it peak? Trend?
-8. **Year-over-year:** 2024 vs 2023 vs 2022 — how fast is solar growing?
+8. **Year-over-year:** 2025 vs 2024 vs 2023 — how fast is solar growing?
 9. **Notable events:** highest/lowest generation days, biggest renewable share, any extreme weather events
 10. **Weekly patterns:** weekend effect in Texas?
-11. **The Uri question:** compare Feb 2024 vs Feb 2021 grid performance
+11. **The Uri question:** compare Feb 2025 vs Feb 2021 grid performance
 12. **Hourly deep-dive:** since we have hourly data (unlike India), explore intra-day patterns — solar noon peak, wind overnight, gas ramping
 
 ## Art Direction
