@@ -1,7 +1,7 @@
 {
   "grid": "ERCOT",
   "year": 2025,
-  "generated": "2026-04-12T22:12:47.148267+00:00",
+  "generated": "2026-04-12T22:20:08.934087+00:00",
   "records": [
     {
       "date": "2025-02-19",
@@ -90,6 +90,14 @@
       "kind": "uri_memorial",
       "headline": "825 GWh",
       "description": "Historical reference \u2014 Winter Storm Uri trough: on this day in 2021 the ERCOT grid delivered 825 GWh, its lowest daily output of that winter, versus Feb 2025 trough of 1,084 GWh."
+    },
+    {
+      "date": "2017-08-27",
+      "day_of_year": 239,
+      "weekday": "Sunday",
+      "kind": "harvey_memorial",
+      "headline": "894 GWh (27% below baseline)",
+      "description": "Historical reference \u2014 Hurricane Harvey demand trough: on this day in 2017, days after landfall, ERCOT delivered 894 GWh \u2014 a 27% drop from the 1,228 GWh pre-storm baseline. Unlike Uri, the fleet held; it was the demand that disappeared."
     }
   ]
 }
