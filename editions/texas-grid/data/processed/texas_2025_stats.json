@@ -1,0 +1,61 @@
+{
+  "year": 2025,
+  "grid": "ERCOT",
+  "source": "ERCOT Fuel Mix Report (IntGenbyFuel2025.xlsx)",
+  "days": 365,
+  "total_annual_twh": 494.8,
+  "total_daily_mean_mwh": 1355487.0,
+  "annual_share_pct": {
+    "gas_cc": 32.71,
+    "wind": 23.23,
+    "solar": 13.71,
+    "coal": 12.74,
+    "nuclear": 8.47,
+    "gas": 7.84,
+    "other": 1.12,
+    "hydro": 0.11,
+    "biomass": 0.07
+  },
+  "annual_twh": {
+    "coal": 63.04,
+    "gas": 38.8,
+    "gas_cc": 161.82,
+    "nuclear": 41.91,
+    "hydro": 0.55,
+    "wind": 114.92,
+    "solar": 67.81,
+    "biomass": 0.36,
+    "other": 5.54
+  },
+  "cv_pct": {
+    "coal": 20.9,
+    "gas": 51.3,
+    "gas_cc": 31.6,
+    "nuclear": 10.6,
+    "hydro": 87.7,
+    "wind": 41.5,
+    "solar": 33.0,
+    "biomass": 71.1,
+    "other": 26.9
+  },
+  "fossil_share_pct": 54.5,
+  "clean_share_pct": 45.5,
+  "cleanest_day": {
+    "date": "2025-03-06",
+    "clean_pct": 73.6
+  },
+  "dirtiest_day": {
+    "date": "2025-01-28",
+    "clean_pct": 17.5
+  },
+  "gas_cc_twh": 161.82,
+  "gas_simple_twh": 38.8,
+  "gas_cc_to_simple_ratio": 4.17,
+  "wsl": {
+    "net_charging_days": 365,
+    "net_discharging_days": 0,
+    "most_charging_day": "2025-12-31",
+    "most_discharging_day": "2025-01-05",
+    "mean_net_mwh": -18302.0
+  }
+}

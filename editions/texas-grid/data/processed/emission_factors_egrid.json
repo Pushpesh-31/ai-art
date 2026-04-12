@@ -1,0 +1,38 @@
+{
+  "factors": {
+    "coal": 0.95,
+    "gas": 0.55,
+    "gas_cc": 0.37,
+    "biomass": 0.0,
+    "other": 0.65,
+    "nuclear": 0.0,
+    "hydro": 0.0,
+    "wind": 0.0,
+    "solar": 0.0
+  },
+  "metadata": {
+    "units": "tonnes CO2 per MWh of generation",
+    "scope": "direct combustion emissions, not lifecycle",
+    "source": {
+      "coal": "EPA eGRID 2023 (released Jan 2025), ERCT subregion, coal class",
+      "gas_cc": "NETL combined-cycle technology factor, ~50% thermal efficiency",
+      "gas": "NETL simple-cycle / steam factor, ~33% thermal efficiency",
+      "other": "Weighted estimate for ERCOT Other category (petroleum coke / fuel oil / landfill gas)",
+      "biomass": "IPCC biogenic convention (direct emissions treated as neutral)",
+      "nuclear_hydro_wind_solar": "Zero direct emissions by convention"
+    },
+    "notes": [
+      "eGRID publishes combined-cycle and simple-cycle gas as one bucket; we split using NETL tech factors.",
+      "Texas gas fleet is ~80% combined-cycle (see notebook 02), so the split matters meaningfully."
+    ]
+  },
+  "annual_summary_2025": {
+    "total_co2_mt": 144.7,
+    "total_gen_twh": 494.8,
+    "mean_intensity_tco2_per_mwh": 0.2895,
+    "cleanest_day": "2025-03-06",
+    "cleanest_intensity": 0.1484,
+    "dirtiest_day": "2025-01-28",
+    "dirtiest_intensity": 0.4333
+  }
+}
