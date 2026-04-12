@@ -1,0 +1,95 @@
+{
+  "grid": "ERCOT",
+  "year": 2025,
+  "generated": "2026-04-12T22:12:47.148267+00:00",
+  "records": [
+    {
+      "date": "2025-02-19",
+      "day_of_year": 50,
+      "weekday": "Wednesday",
+      "kind": "peak_generation",
+      "headline": "1,750 GWh",
+      "description": "Peak generation day \u2014 demand maxed, gas-CC at 608 GWh, wind at 397 GWh"
+    },
+    {
+      "date": "2025-03-16",
+      "day_of_year": 75,
+      "weekday": "Sunday",
+      "kind": "lowest_generation",
+      "headline": "1,048 GWh",
+      "description": "Lowest generation day \u2014 mild weather, gas-CC at 270 GWh"
+    },
+    {
+      "date": "2025-03-06",
+      "day_of_year": 65,
+      "weekday": "Thursday",
+      "kind": "wind_record",
+      "headline": "611 GWh (53.4% of mix)",
+      "description": "Wind record \u2014 611 GWh from wind (53.4% of total generation)"
+    },
+    {
+      "date": "2025-07-29",
+      "day_of_year": 210,
+      "weekday": "Tuesday",
+      "kind": "solar_record",
+      "headline": "305 GWh (18.4%)",
+      "description": "Solar record \u2014 305 GWh from solar (18.4% of total generation)"
+    },
+    {
+      "date": "2025-02-21",
+      "day_of_year": 52,
+      "weekday": "Friday",
+      "kind": "gas_peak",
+      "headline": "995 GWh (60.5%)",
+      "description": "Gas peak day \u2014 gas covered 60.5% of generation"
+    },
+    {
+      "date": "2025-03-06",
+      "day_of_year": 65,
+      "weekday": "Thursday",
+      "kind": "cleanest_day",
+      "headline": "0.148 tCO2/MWh",
+      "description": "Cleanest day of 2025 \u2014 73.6% clean mix, intensity 0.148 tCO2/MWh"
+    },
+    {
+      "date": "2025-01-28",
+      "day_of_year": 28,
+      "weekday": "Tuesday",
+      "kind": "dirtiest_day",
+      "headline": "0.433 tCO2/MWh",
+      "description": "Dirtiest day of 2025 \u2014 intensity 0.433 tCO2/MWh, coal at 221 GWh"
+    },
+    {
+      "date": "2025-03-06",
+      "day_of_year": 65,
+      "weekday": "Thursday",
+      "kind": "greenest_mix",
+      "headline": "73.6% clean",
+      "description": "Greenest mix day \u2014 73.6% of generation from nuclear + hydro + wind + solar"
+    },
+    {
+      "date": "2025-03-06",
+      "day_of_year": 65,
+      "weekday": "Thursday",
+      "kind": "cleanest_hour",
+      "headline": "0.082 tCO2/MWh",
+      "description": "Cleanest hour of 2025 \u2014 25.3 GWh wind + 10.0 GWh solar"
+    },
+    {
+      "date": "2025-09-25",
+      "day_of_year": 268,
+      "weekday": "Thursday",
+      "kind": "dirtiest_hour",
+      "headline": "0.495 tCO2/MWh",
+      "description": "Dirtiest hour of 2025 \u2014 coal + simple-cycle gas dominated, minimal wind"
+    },
+    {
+      "date": "2021-02-24",
+      "day_of_year": 55,
+      "weekday": "Wednesday",
+      "kind": "uri_memorial",
+      "headline": "825 GWh",
+      "description": "Historical reference \u2014 Winter Storm Uri trough: on this day in 2021 the ERCOT grid delivered 825 GWh, its lowest daily output of that winter, versus Feb 2025 trough of 1,084 GWh."
+    }
+  ]
+}
