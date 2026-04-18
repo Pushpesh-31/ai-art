@@ -1,0 +1,110 @@
+{
+  "year": 2025,
+  "grid": "US48",
+  "source": "EIA-930 v2 API (electricity/rto/fuel-type-data)",
+  "days": 365,
+  "total_annual_twh": 4268.7,
+  "total_daily_mean_mwh": 11695191.0,
+  "annual_share_pct": {
+    "NG": 39.54,
+    "NUC": 18.43,
+    "COL": 17.61,
+    "WND": 10.85,
+    "SUN": 6.26,
+    "WAT": 5.79,
+    "OTH": 1.15,
+    "OIL": 0.18,
+    "SNB": 0.1,
+    "GEO": 0.09,
+    "WNB": 0.0,
+    "UNK": 0.0
+  },
+  "annual_twh": {
+    "COL": 751.71,
+    "NG": 1687.75,
+    "OIL": 7.82,
+    "OTH": 48.9,
+    "NUC": 786.88,
+    "WND": 463.35,
+    "SUN": 267.24,
+    "WAT": 246.98,
+    "GEO": 4.05,
+    "SNB": 4.06,
+    "WNB": 0.0,
+    "UNK": 0.0
+  },
+  "cv_pct": {
+    "COL": 22.2,
+    "NG": 20.3,
+    "OIL": 120.1,
+    "OTH": 17.0,
+    "NUC": 7.2,
+    "WND": 30.6,
+    "SUN": 27.5,
+    "WAT": 16.8,
+    "GEO": 36.4,
+    "SNB": 33.3,
+    "WNB": NaN,
+    "UNK": NaN
+  },
+  "fossil_share_pct": 58.5,
+  "clean_share_pct": 41.5,
+  "cleanest_day": {
+    "date": "2025-04-13",
+    "clean_pct": 55.8
+  },
+  "dirtiest_day": {
+    "date": "2025-08-19",
+    "clean_pct": 31.7
+  },
+  "top_10_bas": {
+    "PJM": {
+      "annual_twh": 873.5,
+      "share_of_us48_pct": 20.5
+    },
+    "MISO": {
+      "annual_twh": 659.1,
+      "share_of_us48_pct": 15.4
+    },
+    "ERCO": {
+      "annual_twh": 486.8,
+      "share_of_us48_pct": 11.4
+    },
+    "SWPP": {
+      "annual_twh": 302.5,
+      "share_of_us48_pct": 7.1
+    },
+    "SOCO": {
+      "annual_twh": 251.8,
+      "share_of_us48_pct": 5.9
+    },
+    "CISO": {
+      "annual_twh": 186.3,
+      "share_of_us48_pct": 4.4
+    },
+    "TVA": {
+      "annual_twh": 162.2,
+      "share_of_us48_pct": 3.8
+    },
+    "NYIS": {
+      "annual_twh": 132.4,
+      "share_of_us48_pct": 3.1
+    },
+    "ISNE": {
+      "annual_twh": 107.1,
+      "share_of_us48_pct": 2.5
+    },
+    "BPAT": {
+      "annual_twh": 82.3,
+      "share_of_us48_pct": 1.9
+    }
+  },
+  "top_10_combined_share_pct": 76.0,
+  "battery": {
+    "net_discharge_days": 364,
+    "net_charge_days": 1,
+    "most_discharge_day": "2025-11-25",
+    "most_charge_day": "2025-12-25",
+    "mean_net_mwh": 20261.0
+  }
+}
