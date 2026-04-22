@@ -1,0 +1,156 @@
+{
+  "events": [
+    {
+      "date": "2025-01-01",
+      "type": "holiday",
+      "label": "New Year's Day"
+    },
+    {
+      "date": "2025-01-20",
+      "type": "holiday",
+      "label": "MLK Day / Inauguration"
+    },
+    {
+      "date": "2025-07-29",
+      "type": "record",
+      "label": "Peak demand: 15,222 GWh"
+    },
+    {
+      "date": "2025-05-26",
+      "type": "holiday",
+      "label": "Memorial Day"
+    },
+    {
+      "date": "2025-07-04",
+      "type": "holiday",
+      "label": "Independence Day"
+    },
+    {
+      "date": "2025-04-13",
+      "type": "record",
+      "label": "Cleanest grid: 55.8% clean"
+    },
+    {
+      "date": "2025-08-19",
+      "type": "record",
+      "label": "Dirtiest grid: 31.7% clean"
+    },
+    {
+      "date": "2025-09-01",
+      "type": "holiday",
+      "label": "Labor Day"
+    },
+    {
+      "date": "2025-11-27",
+      "type": "holiday",
+      "label": "Thanksgiving"
+    },
+    {
+      "date": "2025-11-28",
+      "type": "holiday",
+      "label": "Black Friday"
+    },
+    {
+      "date": "2025-05-04",
+      "type": "record",
+      "label": "Lowest demand: 9,620 GWh"
+    },
+    {
+      "date": "2025-12-25",
+      "type": "holiday",
+      "label": "Christmas"
+    }
+  ],
+  "records": [
+    {
+      "metric": "Highest total generation",
+      "date": "2025-07-29",
+      "day": "Tuesday",
+      "value": "15,221.9 GWh"
+    },
+    {
+      "metric": "Lowest total generation",
+      "date": "2025-05-04",
+      "day": "Sunday",
+      "value": "9,620.2 GWh"
+    },
+    {
+      "metric": "Highest coal day",
+      "date": "2025-01-21",
+      "day": "Tuesday",
+      "value": "3,317.4 GWh"
+    },
+    {
+      "metric": "Lowest coal day",
+      "date": "2025-03-15",
+      "day": "Saturday",
+      "value": "1,322.2 GWh"
+    },
+    {
+      "metric": "Highest gas day",
+      "date": "2025-07-29",
+      "day": "Tuesday",
+      "value": "7,037.1 GWh"
+    },
+    {
+      "metric": "Highest wind day",
+      "date": "2025-06-21",
+      "day": "Saturday",
+      "value": "2,219.9 GWh"
+    },
+    {
+      "metric": "Highest solar day",
+      "date": "2025-07-28",
+      "day": "Monday",
+      "value": "1,059.0 GWh"
+    },
+    {
+      "metric": "Highest nuclear day",
+      "date": "2025-12-20",
+      "day": "Saturday",
+      "value": "2,378.5 GWh"
+    },
+    {
+      "metric": "Highest hydro day",
+      "date": "2025-05-16",
+      "day": "Friday",
+      "value": "889.4 GWh"
+    },
+    {
+      "metric": "Cleanest grid day",
+      "date": "2025-04-13",
+      "day": "Sunday",
+      "value": "55.8%"
+    },
+    {
+      "metric": "Dirtiest grid day",
+      "date": "2025-08-19",
+      "day": "Tuesday",
+      "value": "31.7%"
+    },
+    {
+      "metric": "Highest CO2 day",
+      "date": "2025-01-21",
+      "day": "Tuesday",
+      "value": "5,911.2 kt"
+    },
+    {
+      "metric": "Lowest CO2 day",
+      "date": "2025-04-13",
+      "day": "Sunday",
+      "value": "2,476.6 kt"
+    },
+    {
+      "metric": "Lowest emissions intensity",
+      "date": "2025-04-13",
+      "day": "Sunday",
+      "value": "0.254"
+    },
+    {
+      "metric": "Highest emissions intensity",
+      "date": "2025-01-07",
+      "day": "Tuesday",
+      "value": "0.404"
+    }
+  ]
+}
