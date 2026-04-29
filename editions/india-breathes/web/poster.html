@@ -238,9 +238,34 @@
     color: var(--faint);
     text-align: right;
   }
+
+  .back-link {
+    position: fixed;
+    top: 20px;
+    left: 24px;
+    z-index: 100;
+    font-family: 'Inter', sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    color: var(--muted);
+    text-decoration: none;
+    padding: 6px 10px;
+    border: 1px solid var(--rule);
+    background: rgba(20, 20, 24, 0.6);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    transition: color 200ms ease, border-color 200ms ease;
+  }
+  .back-link:hover {
+    color: var(--warm);
+    border-color: var(--warm);
+  }
 </style>
 </head>
 <body>
+
+<a class="back-link" href="https://pushpesh.ai">← pushpesh.ai</a>
 
 <!-- Export buttons -->
 <div class="export-bar" id="export-bar">
